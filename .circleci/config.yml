@@ -365,19 +365,16 @@ jobs:
             apk add --update curl
             pip install awscli
       - run:
-          name: Get backend url
+          name: Backend smoke test.
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances \
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
             --output text)
             API_URL=http://${BACKEND_IP}:3030/api/status
-      - run:
-          name: Backend smoke test.
-          command: |
             if curl ${API_URL} | grep "ok"
             then
-              return 1
+              return 0
             else
               return 1
             fi
