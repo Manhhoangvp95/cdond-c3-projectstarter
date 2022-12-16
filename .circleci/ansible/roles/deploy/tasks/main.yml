@@ -10,6 +10,10 @@
   copy:
     src: "~/artifact.tar.gz"
     dest: "~/artifact.tar.gz"
+- name: "Copying env file"
+  copy:
+    src: "~/.env"
+    dest: "~/backend/.env"
 
 - name: "Unzip backend files to correct directory"
   ansible.builtin.unarchive:
@@ -18,20 +22,32 @@
 
 - name: "Install dependencies"
   shell: |
-    echo $TYPEORM_CONNECTION
-    echo $TYPEORM_ENTITIES
-    echo $TYPEORM_HOST
-    echo $TYPEORM_MIGRATIONS
     cd ~/backend
     npm install
 
 - name: "Executing node"
+  become: true
   shell: |
     cd ~/backend
     pm2 stop default
     pm2 start npm -- start
   register: execute_node_server
+  environment:
+    ENVIRONMENT: production
+    TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
+    TYPEORM_MIGRATIONS_DIR: "./migrations"
+    TYPEORM_MIGRATIONS: "./migrations/*.js"
+    TYPEORM_ENTITIES: "./modules/domain/**/*.entity.js"
+    TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
+    TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT') }}"
+    TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
+    TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
+    TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
 
 - name: print log
   debug:
-    msg: "{{ execute_node_server.stdout_lines }}"
+    msg:
+    - "{{ execute_node_server.stdout_lines }}"
+    - "{{ lookup('env', 'TYPEORM_HOST') }}"
+    - "{{ lookup('env', 'TYPEORM_USERNAME') }}"
+    - "{{ lookup('env', 'TYPEORM_HOST') }}"
