@@ -12,7 +12,7 @@
     dest: "~/artifact.tar.gz"
 - name: "Copying env file"
   copy:
-    src: "~/.env"
+    src: "~/backend/.env"
     dest: "~/backend/.env"
 
 - name: "Unzip backend files to correct directory"
