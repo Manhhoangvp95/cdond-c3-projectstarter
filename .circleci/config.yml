@@ -67,8 +67,6 @@ jobs:
             cd backend
             npm i
             npm run build
-            cp ~/project/.env .
-            cat .env
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
