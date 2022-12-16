@@ -5,6 +5,7 @@
     path: ~/backend
     state: directory
     mode: 0755
+    recurse: yes
 
 - name: "Copying backend zip file"
   copy:
@@ -22,12 +23,10 @@
     npm install
 
 - name: "Executing node"
-  become: true
   shell: |
     cd ~/backend
-    npm audit fix && npm run build
     pm2 stop default
-    pm2 start npm --name backend -- start
+    pm2 start npm -- start
   register: execute_node_server
 
 - name: print log
