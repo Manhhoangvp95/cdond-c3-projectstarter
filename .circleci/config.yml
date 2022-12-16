@@ -221,7 +221,7 @@ jobs:
     docker:
       - image: python:3.7-alpine3.11
         environment:
-          NODE_ENV: "local"
+          NODE_ENV: "development"
           TYPEORM_CONNECTION: $TYPEORM_CONNECTION
           TYPEORM_HOST: $TYPEORM_HOST
           TYPEORM_USERNAME: $TYPEORM_USERNAME
@@ -323,7 +323,7 @@ jobs:
       - image: cimg/python:3.10.0-node
         user: root
         environment:
-          NODE_ENV: "local"
+          NODE_ENV: "development"
           VERSION: "1"
           TYPEORM_CONNECTION: $TYPEORM_CONNECTION
           TYPEORM_HOST: $TYPEORM_HOST
