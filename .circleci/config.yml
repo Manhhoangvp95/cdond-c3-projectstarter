@@ -30,10 +30,9 @@ commands:
             SUCCESS=$(curl https://kvdb.io/KKGdy3gdmxYGSGUVzLbD4q/migrations-<< parameters.workflow_id >> --insecure)
             if [ $SUCCESS == 1 ]; 
             then
-              cd ~/project/backend
-              npm install
+              cd backend
+              npm i
               npm run migration:revert
-              exit 1
             fi
             
 jobs:
@@ -222,6 +221,9 @@ jobs:
     docker:
       - image: python:3.7-alpine3.11
         environment:
+          NODE_ENV: "local"
+          VERSION: "1"
+          ENVIRONMENT: "production"
           TYPEORM_CONNECTION: $TYPEORM_CONNECTION
           TYPEORM_HOST: $TYPEORM_HOST
           TYPEORM_USERNAME: $TYPEORM_USERNAME
@@ -324,6 +326,7 @@ jobs:
         environment:
           NODE_ENV: "local"
           VERSION: "1"
+          ENVIRONMENT: "production"
           TYPEORM_CONNECTION: $TYPEORM_CONNECTION
           TYPEORM_HOST: $TYPEORM_HOST
           TYPEORM_USERNAME: $TYPEORM_USERNAME
@@ -367,13 +370,13 @@ jobs:
 
   smoke-test:
     docker:
-      - image: cimg/python:3.10.0-node
+      - image: python:3.7-alpine3.11
     steps:
       - checkout
       - run:
           name: Install dependencies
           command: |
-            sudo apt update
+            apk add --update tar gzip ansible nodejs npm curl
             pip install awscli
       - run:
           name: Backend smoke test.
@@ -413,7 +416,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update curl
+            apk add --update tar gzip ansible nodejs npm curl
             pip install awscli
       - run:
           name: Get old workflow id
@@ -444,10 +447,15 @@ jobs:
 
   cleanup:
       docker:
-        - image: amazon/aws-cli
+        - image: python:3.7-alpine3.11
       steps:
         # Checkout code from git
         - checkout
+        - run:
+            name: Install dependencies
+            command: |
+              apk add --update tar gzip ansible nodejs npm curl
+              pip install awscli
         - run:
             name: Remove old stacks and files
             command: |
@@ -469,7 +477,10 @@ jobs:
                 aws cloudformation delete-stack --stack-name backend-${OLD_WORKFLOW_ID}
                 aws cloudformation delete-stack --stack-name frontend-${OLD_WORKFLOW_ID}
               fi
-            
+        - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+        - revert-migrations:
+            workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
 workflows:
   default:
