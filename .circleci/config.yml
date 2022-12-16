@@ -360,8 +360,6 @@ jobs:
       - run:
           name: Deploy backend
           command: |
-            pwd
-            ls
             echo "Contents  of the inventory.txt file is -------"
             cat .circleci/ansible/inventory.txt
             export ANSIBLE_HOST_KEY_CHECKING=False

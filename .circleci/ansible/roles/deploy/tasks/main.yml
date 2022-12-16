@@ -18,6 +18,10 @@
 
 - name: "Install dependencies"
   shell: |
+    echo $TYPEORM_CONNECTION
+    echo $TYPEORM_ENTITIES
+    echo $TYPEORM_HOST
+    echo $TYPEORM_MIGRATIONS
     cd ~/backend
     npm install
 
