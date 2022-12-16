@@ -278,7 +278,7 @@ jobs:
             then
               curl https://kvdb.io/KKGdy3gdmxYGSGUVzLbD4q/migrations-${CIRCLE_WORKFLOW_ID:0:7} -d '1' --insecure
             else
-              curl https://kvdb.io/KKGdy3gdmxYGSGUVzLbD4q/migrations-${CIRCLE_WORKFLOW_ID:0:7} -d '1' --insecure
+              curl https://kvdb.io/KKGdy3gdmxYGSGUVzLbD4q/migrations-${CIRCLE_WORKFLOW_ID:0:7} -d '0' --insecure
             fi
             echo Key: migrations-${CIRCLE_WORKFLOW_ID:0:7}
       - revert-migrations:
