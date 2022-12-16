@@ -21,6 +21,7 @@
   npm:
     name: n
     global: yes
+    production: yes
 
 - name: "install nodejs 12.20.1"
   become: yes
@@ -31,4 +32,5 @@
   npm:
     name: pm2
     global: yes
+    production: yes
     state: present
