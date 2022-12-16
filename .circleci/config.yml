@@ -222,9 +222,6 @@ jobs:
     docker:
       - image: python:3.7-alpine3.11
         environment:
-          NODE_ENV: "local"
-          VERSION: "1"
-          ENVIRONMENT: "production"
           TYPEORM_CONNECTION: $TYPEORM_CONNECTION
           TYPEORM_HOST: $TYPEORM_HOST
           TYPEORM_USERNAME: $TYPEORM_USERNAME
@@ -327,7 +324,6 @@ jobs:
         environment:
           NODE_ENV: "local"
           VERSION: "1"
-          ENVIRONMENT: "production"
           TYPEORM_CONNECTION: $TYPEORM_CONNECTION
           TYPEORM_HOST: $TYPEORM_HOST
           TYPEORM_USERNAME: $TYPEORM_USERNAME
@@ -371,14 +367,14 @@ jobs:
 
   smoke-test:
     docker:
-      - image: amazon/aws-cli
+      - image: cimg/python:3.10.0-node
     steps:
       - checkout
       - run:
           name: Install dependencies
           command: |
-            apk add --update curl
-            yum -y install tar gzip
+            sudo apt update
+            pip install awscli
       - run:
           name: Backend smoke test.
           command: |
