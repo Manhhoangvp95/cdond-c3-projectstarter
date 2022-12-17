@@ -191,7 +191,7 @@ jobs:
       - run:
           name: Add .env vars to backend distro
           command: |
-            echo ENVIRONMENT=development > backend/.env
+            echo ENVIRONMENT=production > backend/.env
             echo TYPEORM_CONNECTION=postgres >> backend/.env
             echo TYPEORM_ENTITIES=./src/modules/domaster/**/*.entity.ts >> backend/.env
             echo TYPEORM_HOST=$TYPEORM_HOST >> backend/.env
@@ -201,7 +201,7 @@ jobs:
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> backend/.env
             echo TYPEORM_MIGRATIONS=./src/migrations/*.ts >> "backend/.env"
             echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> "backend/.env"
-            echo NODE_ENV=development >> "backend/.env"
+            echo NODE_ENV=production >> "backend/.env"
       - restore_cache:
           keys: [ backend-build ]
       - persist_to_workspace:
@@ -221,7 +221,7 @@ jobs:
     docker:
       - image: python:3.7-alpine3.11
         environment:
-          NODE_ENV: "development"
+          NODE_ENV: "production"
           TYPEORM_CONNECTION: $TYPEORM_CONNECTION
           TYPEORM_HOST: $TYPEORM_HOST
           TYPEORM_USERNAME: $TYPEORM_USERNAME
@@ -229,7 +229,7 @@ jobs:
           TYPEORM_DATABASE: $TYPEORM_DATABASE
           TYPEORM_PORT: $TYPEORM_PORT
           TYPEORM_ENTITIES: $TYPEORM_ENTITIES
-          ENVIRONMENT: "development"
+          ENVIRONMENT: "production"
     steps:
       - checkout
       - add_ssh_keys:
@@ -306,7 +306,7 @@ jobs:
             --output text)
             export API_URL="http://${BACKEND_IP}:3030"
             echo API_URL=$API_URL > frontend/.env
-            echo ENVIRONMENT=development >> frontend/.env
+            echo ENVIRONMENT=production >> frontend/.env
       - run:
           name: Deploy frontend objects
           command: |
@@ -323,7 +323,7 @@ jobs:
       - image: cimg/python:3.10.0-node
         user: root
         environment:
-          NODE_ENV: "development"
+          NODE_ENV: "production"
           VERSION: "1"
           TYPEORM_CONNECTION: $TYPEORM_CONNECTION
           TYPEORM_HOST: $TYPEORM_HOST
@@ -332,7 +332,7 @@ jobs:
           TYPEORM_DATABASE: $TYPEORM_DATABASE
           TYPEORM_PORT: $TYPEORM_PORT
           TYPEORM_ENTITIES: $TYPEORM_ENTITIES
-          ENVIRONMENT: "development"
+          ENVIRONMENT: "production"
     steps:
       - checkout
       - add_ssh_keys:
@@ -466,10 +466,7 @@ jobs:
                 aws cloudformation delete-stack --stack-name backend-${OldWorkflowID}
                 aws cloudformation delete-stack --stack-name frontend-${OldWorkflowID}
               fi
-        - destroy-environment:
-            workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
-        - revert-migrations:
-            workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+
 
 workflows:
   default:
